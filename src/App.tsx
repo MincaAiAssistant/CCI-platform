@@ -4,6 +4,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import NotFound from './pages/not-found';
 import MainLayout from './components/layout/main-layout';
 import Dashboard from './pages/dashboard';
+import AuthPage from './pages/auth-page';
+import AgentsInternal from './pages/agents-internal';
 
 function App() {
   return (
@@ -12,8 +14,10 @@ function App() {
         <Routes>
           <Route path="*" element={<NotFound />} />
           <Route element={<MainLayout />}>
-            <Route key={'/'} path={'/'} element={<Dashboard />} />
+            <Route path={'/'} element={<Dashboard />} />
+            <Route path="/agents-internal" element={<AgentsInternal />} />
           </Route>
+          <Route path={'/auth'} element={<AuthPage />} />
         </Routes>
       </BrowserRouter>
     </Suspense>
