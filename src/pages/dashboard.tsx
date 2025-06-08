@@ -15,11 +15,10 @@ export default function Dashboard() {
   return (
     <div className="max-w-6xl mx-auto">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">
-        Assistant IA CCI Mexico
+        Agent IA CCI Mexico
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Carte Assistant IA - Web */}
         <Card
           className="p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-t-4 border-[#1e5dbe]"
           onClick={() => handleAgentSelection('internal')}
@@ -31,15 +30,14 @@ export default function Dashboard() {
               </span>
             </div>
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Assistant IA – Web
+              AI Agent – Web
             </h2>
             <p className="text-gray-600">
-              Assistance en ligne pour les visiteurs de votre site web
+              Online assistance for your website visitors
             </p>
           </div>
         </Card>
 
-        {/* Carte Assistant IA - WhatsApp */}
         <Card
           className="p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-t-4 border-[#1e5dbe]"
           onClick={() => handleAgentSelection('internal')}
@@ -51,15 +49,14 @@ export default function Dashboard() {
               </span>
             </div>
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Assistant IA – WhatsApp
+              AI Agent – WhatsApp
             </h2>
             <p className="text-gray-600">
-              Support client interactif via WhatsApp
+              Interactive customer support via WhatsApp
             </p>
           </div>
         </Card>
 
-        {/* Carte Agent IA - Campagnes WhatsApp */}
         <Card
           className="p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-t-4 border-[#1e5dbe]"
           onClick={() => handleAgentSelection('client')}
@@ -71,10 +68,10 @@ export default function Dashboard() {
               </span>
             </div>
             <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Agent IA – Campagnes WhatsApp
+              AI Agent – WhatsApp Campaigns
             </h2>
             <p className="text-gray-600">
-              Automatisez vos campagnes marketing sur WhatsApp
+              Automate your marketing campaigns on WhatsApp
             </p>
           </div>
         </Card>
