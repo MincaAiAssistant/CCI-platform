@@ -3,9 +3,10 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import NotFound from './pages/not-found';
 import MainLayout from './components/layout/main-layout';
-import Dashboard from './pages/dashboard';
-import AuthPage from './pages/auth-page';
-import AgentsInternal from './pages/agents-internal';
+import { protectedRoutes } from './routes/config/protectedRoutes';
+import ProtectedRouter from './routes/protectedRouter';
+import PublicRouter from './routes/publicRouter';
+import { publicRoutes } from './routes/config/publicRoutes';
 
 function App() {
   return (
@@ -13,11 +14,26 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="*" element={<NotFound />} />
-          <Route element={<MainLayout />}>
-            <Route path={'/'} element={<Dashboard />} />
-            <Route path="/agents-internal" element={<AgentsInternal />} />
+          <Route element={<ProtectedRouter />}>
+            <Route element={<MainLayout />}>
+              {protectedRoutes.map((route) => (
+                <Route
+                  key={route.path}
+                  path={route.path}
+                  element={route.component}
+                />
+              ))}
+            </Route>
           </Route>
-          <Route path={'/auth'} element={<AuthPage />} />
+          <Route element={<PublicRouter />}>
+            {publicRoutes.map((route) => (
+              <Route
+                key={route.path}
+                path={route.path}
+                element={route.component}
+              />
+            ))}
+          </Route>
         </Routes>
       </BrowserRouter>
     </Suspense>

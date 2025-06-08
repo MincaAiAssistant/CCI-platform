@@ -1,8 +1,12 @@
+import { useAuthStore } from '@/lib/auth-store';
+
 interface HeaderProps {
   title: string;
 }
 
 export default function Header({ title }: HeaderProps) {
+  const { user } = useAuthStore();
+
   return (
     <header className="bg-white shadow-sm flex items-center justify-between p-4">
       <div className="flex items-center space-x-4">
@@ -19,9 +23,11 @@ export default function Header({ title }: HeaderProps) {
           <i className="fas fa-question-circle"></i>
         </button>
         <div className="md:flex items-center space-x-2 hidden">
-          <span className="text-sm text-gray-700">Utilisateur CCI</span>
+          <span className="text-sm text-gray-700">{user?.username}</span>
           <div className="w-8 h-8 rounded-full bg-[#0369a1] flex items-center justify-center">
-            <span className="text-white font-medium">U</span>
+            <span className="text-white font-medium">
+              {user?.username?.charAt(0).toUpperCase()}
+            </span>
           </div>
         </div>
       </div>

@@ -1,8 +1,10 @@
 import { useAgentContext } from '@/context/agent-context';
+import { useAuthStore } from '@/lib/auth-store';
 import { cn } from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
 
 export default function Sidebar() {
+  const { logout } = useAuthStore();
   const location = useLocation();
   const { activeView, setActiveView, selectAgent } = useAgentContext();
 
@@ -116,6 +118,19 @@ export default function Sidebar() {
               <i className="fas fa-bullhorn"></i>
             </span>
             <span>Agent Campagne</span>
+          </div>
+        </div>
+      </div>
+      <div className="mt-auto px-4 pb-6">
+        <div
+          onClick={logout}
+          className="px-4 py-2 flex items-center cursor-pointer rounded-md hover:bg-[#0288d1]/40 transition-all text-white"
+        >
+          <div className="flex items-center space-x-3">
+            <span className="text-red-300 w-6 h-6 flex items-center justify-center">
+              <i className="fas fa-sign-out-alt"></i>
+            </span>
+            <span>Sign Out</span>
           </div>
         </div>
       </div>

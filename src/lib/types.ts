@@ -47,3 +47,25 @@ export interface CustomerMessage {
   created_at: Date;
   attachments?: Attachment[];
 }
+
+// 🧩 Route types
+
+export interface Route {
+  path: string;
+  component: React.ReactNode;
+  icon?: string;
+  title?: string;
+  description?: string;
+}
+
+// 🧑‍💼 User Types
+
+export interface User {
+  userid: string;
+  username: string;
+  email: string;
+}
+export interface AuthResponse {
+  user: User;
+  token: string;
+}
