@@ -1,7 +1,7 @@
 import { Agent, Message } from '@/types/agents';
 import { createContext, useContext, useState, ReactNode } from 'react';
 
-// Définition du type de contexte
+// Context type definition
 interface AgentContextType {
   agents: Agent[];
   selectedAgent: Agent | null;
@@ -15,35 +15,35 @@ interface AgentContextType {
 const agentsData: Agent[] = [
   {
     id: 'matching',
-    name: 'Agent Matching Membres',
-    description: 'Recommandations de synergies entre membres',
+    name: 'Member Matching Agent',
+    description: 'Recommendations for synergies between members',
     icon: 'handshake',
     welcomeMessage:
-      "Bonjour, je suis votre assistant virtuel pour identifier des synergies potentielles entre les membres de la CCI. Comment puis-je vous aider aujourd'hui ?",
+      'Hello, I am your virtual assistant for identifying potential synergies between CCI members. How can I help you today?',
   },
   {
     id: 'content',
-    name: 'Agent Création de Contenu & Veille',
-    description: 'Génération automatique de contenus, newsletters, veilles',
+    name: 'Content Creation & Monitoring Agent',
+    description: 'Automatic content generation, newsletters, monitoring',
     icon: 'pen-fancy',
     welcomeMessage:
-      "Bonjour, je suis votre assistant de création de contenu. Je peux vous aider à générer des newsletters, articles, et rapports de veille. Que souhaitez-vous créer aujourd'hui ?",
+      'Hello, I am your content creation assistant. I can help you generate newsletters, articles, and monitoring reports. What would you like to create today?',
   },
   {
     id: 'hr',
-    name: 'Agent RH & Recrutement',
-    description: 'Traitement automatisé de candidatures',
+    name: 'HR & Recruitment Agent',
+    description: 'Automated application processing',
     icon: 'user-plus',
     welcomeMessage:
-      "Bonjour, je suis votre assistant RH. Je peux vous aider à analyser des CV, préparer des offres d'emploi ou organiser votre processus de recrutement. Comment puis-je vous aider ?",
+      'Hello, I am your HR assistant. I can help you analyze CVs, prepare job offers, or organize your recruitment process. How can I help you?',
   },
   {
     id: 'offers',
-    name: "Agent Appels d'Offres",
-    description: "Veille ciblée sur les appels d'offres publics",
+    name: 'Tender Agent',
+    description: 'Targeted monitoring of public tenders',
     icon: 'file-contract',
     welcomeMessage:
-      "Bonjour, je suis votre assistant pour les appels d'offres. Je peux vous aider à identifier les opportunités pertinentes et à préparer vos réponses. Quelle est votre recherche ?",
+      'Hello, I am your tender assistant. I can help you identify relevant opportunities and prepare your responses. What are you looking for?',
   },
 ];
 
