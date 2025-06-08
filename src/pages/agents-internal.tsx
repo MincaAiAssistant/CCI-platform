@@ -3,13 +3,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-
-import { format } from 'date-fns';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { RefreshCw } from 'lucide-react';
+import { format } from 'date-fns';
+import GoogleSheetViewer from '@/components/sheets/google-sheet-viewer';
 
 // Type de données pour une conversation
 interface Conversation {
@@ -38,9 +39,26 @@ export default function AgentsInternal() {
   // État pour suivre la conversation sélectionnée
   const [selectedConversation, setSelectedConversation] =
     useState<Conversation | null>(null);
+  // État pour indiquer qu'un rafraîchissement est en cours
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // État pour la recherche de conversations
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Fonction pour rafraîchir les conversations
+  const refreshConversations = () => {
+    setIsRefreshing(true);
+
+    // Simulation d'un appel API pour rafraîchir les données
+    setTimeout(() => {
+      // Dans une application réelle, ce serait un appel à une API
+      // pour récupérer les conversations à partir de la base de données
+      console.log('Refreshing conversations data...');
+
+      // Fin de la simulation après 1 seconde
+      setIsRefreshing(false);
+    }, 1000);
+  };
 
   // Exemples de conversations (normalement, elles viendraient d'une API)
   const mockConversations: Conversation[] = [
@@ -211,13 +229,30 @@ export default function AgentsInternal() {
         <TabsTrigger value="stats" className="text-base">
           <span className="mr-2">📊</span> Statistics (KPIs)
         </TabsTrigger>
+        <TabsTrigger value="leads" className="text-base">
+          <span className="mr-2">🗃️</span> Leads Database
+        </TabsTrigger>
       </TabsList>
 
       {/* Onglet Historique des conversations */}
       <TabsContent value="history" className="space-y-4">
         <div className="flex flex-col space-y-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold">Conversations</h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl font-bold">Conversations</h2>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={refreshConversations}
+                disabled={isRefreshing}
+                className="flex items-center gap-1"
+              >
+                <RefreshCw
+                  className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`}
+                />
+                {isRefreshing ? 'Refreshing...' : 'Refresh'}
+              </Button>
+            </div>
             <div className="text-sm text-gray-500">
               Monitor customer chats handled by your AI assistant.
             </div>
@@ -378,6 +413,19 @@ export default function AgentsInternal() {
         </div>
       </TabsContent>
 
+      {/* Onglet Leads Database */}
+      <TabsContent value="leads">
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold">Leads Database</h2>
+          </div>
+
+          <div className="w-full h-[calc(100vh-16rem)] bg-white rounded-md border border-gray-200">
+            <GoogleSheetViewer />
+          </div>
+        </div>
+      </TabsContent>
+
       {/* Onglet Statistiques */}
       <TabsContent value="stats">
         <div className="space-y-6">
@@ -443,6 +491,7 @@ export default function AgentsInternal() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* KPI 1: Total Conversations */}
             <Card className="p-6">
               <div className="text-sm font-medium text-gray-500 mb-2">
                 Total Conversations
@@ -462,11 +511,95 @@ export default function AgentsInternal() {
                       endDate,
                       'dd MMM yyyy'
                     )}`
-                  : 'Sélectionnez une période'}
+                  : 'Select a period'}
               </div>
             </Card>
 
+            {/* KPI 2: Average Conversations Per Day */}
             <Card className="p-6">
+              <div className="text-sm font-medium text-gray-500 mb-2">
+                Average Conversations Per Day
+              </div>
+              <div className="text-4xl font-bold text-[#1e5dbe]">
+                {startDate && endDate
+                  ? Math.round(
+                      (startDate &&
+                      endDate &&
+                      Math.abs(endDate.getTime() - startDate.getTime()) /
+                        (1000 * 60 * 60 * 24) <=
+                        10
+                        ? stats.week.totalConversations
+                        : stats.month.totalConversations) /
+                        Math.max(
+                          1,
+                          Math.ceil(
+                            Math.abs(endDate.getTime() - startDate.getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          )
+                        )
+                    )
+                  : 0}
+              </div>
+              <div className="text-xs text-gray-500 mt-2">
+                {startDate && endDate
+                  ? `${format(startDate, 'dd MMM')} - ${format(
+                      endDate,
+                      'dd MMM yyyy'
+                    )}`
+                  : 'Select a period'}
+              </div>
+            </Card>
+
+            {/* KPI 3: Average Exchanges Per Conversation */}
+            <Card className="p-6">
+              <div className="text-sm font-medium text-gray-500 mb-2">
+                Average Exchanges Per Conversation
+              </div>
+              <div className="text-4xl font-bold text-[#1e5dbe]">
+                {startDate &&
+                endDate &&
+                Math.abs(endDate.getTime() - startDate.getTime()) /
+                  (1000 * 60 * 60 * 24) <=
+                  10
+                  ? 4
+                  : 6}
+              </div>
+              <div className="text-xs text-gray-500 mt-2">
+                {startDate && endDate
+                  ? `${format(startDate, 'dd MMM')} - ${format(
+                      endDate,
+                      'dd MMM yyyy'
+                    )}`
+                  : 'Select a period'}
+              </div>
+            </Card>
+
+            {/* KPI 4: Calendly Link Click Rate */}
+            <Card className="p-6">
+              <div className="text-sm font-medium text-gray-500 mb-2">
+                Calendly Link Click Rate (Web Only)
+              </div>
+              <div className="text-4xl font-bold text-[#1e5dbe]">
+                {startDate &&
+                endDate &&
+                Math.abs(endDate.getTime() - startDate.getTime()) /
+                  (1000 * 60 * 60 * 24) <=
+                  10
+                  ? '23%'
+                  : '19%'}
+              </div>
+              <div className="text-xs text-gray-500 mt-2">
+                {startDate && endDate
+                  ? `${format(startDate, 'dd MMM')} - ${format(
+                      endDate,
+                      'dd MMM yyyy'
+                    )}`
+                  : 'Select a period'}
+              </div>
+            </Card>
+
+            {/* Frequency of Common Questions */}
+            <Card className="p-6 md:col-span-2">
               <div className="text-sm font-medium text-gray-500 mb-4">
                 Frequency of Common Questions
               </div>
