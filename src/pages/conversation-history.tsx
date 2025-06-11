@@ -1,27 +1,17 @@
 import { useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
 import SearchBar from '@/components/agent-web/search-bar';
 import ConversationList from '@/components/agent-web/conversation-list';
-import Statistics from '@/components/agent-web/statistics';
-import LeadsDatabase from '@/components/agent-web/leads-database';
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query';
-import { getChats, getConversationStatistics } from '@/services/chat-services';
-import { Chat } from '@/types/chat-types';
 import ConversationDetails from '@/components/agent-web/conversation-detail';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { getChats } from '@/services/chat-services';
+import { Chat } from '@/types/chat-types';
 
-export default function AgentsInternal() {
+export default function ConversationHistory() {
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState('history');
-  const [startDate, setStartDate] = useState<Date | undefined>(
-    new Date(new Date().setDate(new Date().getDate() - 7))
-  );
-  const [endDate, setEndDate] = useState<Date | undefined>(new Date());
   const [selectedConversation, setSelectedConversation] = useState<Chat | null>(
     null
   );
@@ -48,29 +38,13 @@ export default function AgentsInternal() {
     },
     initialPageParam: 1,
   });
-  const { data: statsData, isLoading: isLoadingStats } = useQuery({
-    queryKey: ['statistics', startDate, endDate],
-    queryFn: () =>
-      getConversationStatistics(
-        startDate
-          ? formatDate(startDate)
-          : formatDate(new Date(new Date().setDate(new Date().getDate() - 7))),
-        endDate ? formatDate(endDate) : formatDate(new Date())
-      ),
-    enabled: !!startDate && !!endDate,
-  });
 
-  const formatDate = (date: Date): string => {
-    return date.toISOString().split('T')[0];
-  };
   const refreshConversations = () => {
     setIsRefreshing(true);
-    queryClient
-      .resetQueries({ queryKey: ['chats', searchQuery] })
-      .finally(() => {
-        setRefreshKey((prev) => prev + 1);
-        setIsRefreshing(false);
-      });
+    queryClient.resetQueries({ queryKey: ['chats'] }).finally(() => {
+      setRefreshKey((prev) => prev + 1);
+      setIsRefreshing(false);
+    });
   };
 
   const allChats = chatsData?.pages.flatMap((page) => page.chats) || [];
@@ -88,25 +62,27 @@ export default function AgentsInternal() {
         );
 
   return (
-    <Tabs
-      defaultValue="history"
-      value={activeTab}
-      onValueChange={setActiveTab}
-      className="w-full"
-    >
-      <TabsList className="mb-6">
-        <TabsTrigger value="history" className="text-base">
-          <span className="mr-2">🔍</span> Conversation History
-        </TabsTrigger>
-        <TabsTrigger value="stats" className="text-base">
-          <span className="mr-2">📊</span> Statistics (KPIs)
-        </TabsTrigger>
-        <TabsTrigger value="leads" className="text-base">
-          <span className="mr-2">🗃️</span> Leads Database
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="history" className="space-y-4">
+    <div className="w-full">
+      <Tabs value="history" className="w-full">
+        <TabsList className="mb-6">
+          <TabsTrigger value="history" asChild>
+            <NavLink to="/conversation-history" className="text-base">
+              <span className="mr-2">🔍</span> Conversation History
+            </NavLink>
+          </TabsTrigger>
+          <TabsTrigger value="stats" asChild>
+            <NavLink to="/conversation-statistics" className="text-base">
+              <span className="mr-2">📊</span> Statistics (KPIs)
+            </NavLink>
+          </TabsTrigger>
+          <TabsTrigger value="leads" asChild>
+            <NavLink to="/leads-database" className="text-base">
+              <span className="mr-2">🗃️</span> Leads Database
+            </NavLink>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+      <div className="space-y-4">
         <div className="flex flex-col space-y-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
@@ -146,28 +122,7 @@ export default function AgentsInternal() {
             <ConversationDetails conversation={selectedConversation} />
           </div>
         </div>
-      </TabsContent>
-
-      <TabsContent value="stats">
-        {isLoadingStats ? (
-          <>ddd</>
-        ) : (
-          statsData && (
-            <Statistics
-              startDate={startDate}
-              setStartDate={setStartDate}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              stats={statsData}
-              isLoading={isLoadingStats}
-            />
-          )
-        )}
-      </TabsContent>
-
-      <TabsContent value="leads">
-        <LeadsDatabase />
-      </TabsContent>
-    </Tabs>
+      </div>
+    </div>
   );
 }

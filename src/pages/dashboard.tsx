@@ -9,7 +9,7 @@ export default function Dashboard() {
   const handleAgentSelection = (agentType: 'internal' | 'client') => {
     setActiveView(agentType);
     selectAgent(null);
-    navigate('/agents-internal');
+    navigate('/conversation-history');
   };
 
   return (

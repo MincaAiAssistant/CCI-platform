@@ -57,11 +57,11 @@ export default function Sidebar() {
           onClick={() => {
             setActiveView('internal');
             selectAgent(null);
-            window.location.href = '/agents-internal';
+            window.location.href = '/conversation-history';
           }}
           className={cn(
             'px-4 py-2 flex items-center cursor-pointer rounded-md hover:bg-[#0288d1]/40 transition-all text-white mb-1',
-            (location.pathname === '/agents-internal' ||
+            (location.pathname === '/conversation-history' ||
               location.pathname === '/') &&
               activeView === 'internal'
               ? 'bg-[#0288d1]/30'
@@ -80,7 +80,7 @@ export default function Sidebar() {
           onClick={() => {
             setActiveView('internal');
             selectAgent(null);
-            window.location.href = '/agents-internal';
+            window.location.href = '/conversation-history';
           }}
           className="px-4 py-2 flex items-center cursor-pointer rounded-md hover:bg-[#0288d1]/40 transition-all text-white mb-1"
         >
