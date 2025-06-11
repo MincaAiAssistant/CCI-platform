@@ -1,7 +1,7 @@
-import { Chat } from "@/types/chat-types";
-import { formatDistanceToNow } from "date-fns";
-import { Loader2 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Chat } from '@/types/chat-types';
+import { formatDistanceToNow } from 'date-fns';
+import { Loader2 } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 
 interface ConversationListProps {
   conversations: Chat[];
@@ -12,6 +12,7 @@ interface ConversationListProps {
   isFetchingNextPage?: boolean;
   fetchNextPage?: () => void;
   refreshKey: number;
+  searchQuery: string;
 }
 
 export default function ConversationList({
@@ -23,6 +24,7 @@ export default function ConversationList({
   isFetchingNextPage,
   fetchNextPage,
   refreshKey,
+  searchQuery,
 }: ConversationListProps) {
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -35,35 +37,44 @@ export default function ConversationList({
   }, [refreshKey]);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          hasNextPage &&
-          !isFetchingNextPage &&
-          fetchNextPage
-        ) {
-          fetchNextPage();
+    if (searchQuery.trim() === '') {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (
+            entries[0].isIntersecting &&
+            hasNextPage &&
+            !isFetchingNextPage &&
+            fetchNextPage
+          ) {
+            fetchNextPage();
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      if (loadMoreRef.current) {
+        observer.observe(loadMoreRef.current);
+      }
+
+      observerRef.current = observer;
+
+      return () => {
+        if (observerRef.current) {
+          observerRef.current.disconnect();
         }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
-    }
-
-    observerRef.current = observer;
-
-    return () => {
+      };
+    } else {
       if (observerRef.current) {
         observerRef.current.disconnect();
+        observerRef.current = null;
       }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, searchQuery]);
   return (
-    <div className="md:col-span-3 overflow-y-auto h-full" ref={scrollContainerRef}>
+    <div
+      className="md:col-span-3 overflow-y-auto h-full"
+      ref={scrollContainerRef}
+    >
       <div className="bg-white rounded-md border border-gray-200 h-full flex flex-col">
         <div className="flex-1 overflow-y-auto">
           {isLoading ? (
@@ -97,7 +108,9 @@ export default function ConversationList({
                   <tr
                     key={chat.chatid}
                     className={`hover:bg-gray-50 cursor-pointer ${
-                      selectedConversation?.chatid === chat.chatid ? "bg-blue-50" : ""
+                      selectedConversation?.chatid === chat.chatid
+                        ? 'bg-blue-50'
+                        : ''
                     }`}
                     onClick={() => setSelectedConversation(chat)}
                   >
@@ -124,10 +137,8 @@ export default function ConversationList({
               ref={loadMoreRef}
               className="flex items-center justify-center py-4"
             >
-              {isFetchingNextPage ? (
+              {isFetchingNextPage && (
                 <Loader2 className="h-6 w-6 animate-spin text-cyan-400" />
-              ) : (
-                <span className="text-sm text-gray-500">Loading more...</span>
               )}
             </div>
           )}

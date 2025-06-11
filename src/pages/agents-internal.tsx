@@ -142,6 +142,7 @@ export default function AgentsInternal() {
               hasNextPage={hasNextPage}
               isFetchingNextPage={isFetchingNextPage}
               fetchNextPage={fetchNextPage}
+              searchQuery={searchQuery}
             />
             <ConversationDetails conversation={selectedConversation} />
           </div>

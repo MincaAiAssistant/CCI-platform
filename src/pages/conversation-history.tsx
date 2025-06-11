@@ -41,6 +41,8 @@ export default function ConversationHistory() {
 
   const refreshConversations = () => {
     setIsRefreshing(true);
+    setSearchQuery('');
+    setSelectedConversation(null);
     queryClient.resetQueries({ queryKey: ['chats'] }).finally(() => {
       setRefreshKey((prev) => prev + 1);
       setIsRefreshing(false);
@@ -118,6 +120,7 @@ export default function ConversationHistory() {
               hasNextPage={hasNextPage}
               isFetchingNextPage={isFetchingNextPage}
               fetchNextPage={fetchNextPage}
+              searchQuery={searchQuery}
             />
             <ConversationDetails conversation={selectedConversation} />
           </div>
