@@ -1,25 +1,33 @@
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { getConversationStatistics } from '@/services/chat-services';
 import Statistics from '@/components/agent-web/statistics';
+import {
+  getWebConversationStatistics,
+  getWhatsappConversationStatistics,
+} from '@/services/chat-services';
+import { ChatType } from '@/lib/types';
 
 export default function ConversationStatistics() {
   const [startDate, setStartDate] = useState<Date | undefined>(
     new Date(new Date().setDate(new Date().getDate() - 7))
   );
   const [endDate, setEndDate] = useState<Date | undefined>(new Date());
-
+  const params = useParams();
+  const type = (params.type ?? '') as ChatType;
   const { data: statsData, isLoading: isLoadingStats } = useQuery({
-    queryKey: ['statistics', startDate, endDate],
-    queryFn: () =>
-      getConversationStatistics(
-        startDate
-          ? formatDate(startDate)
-          : formatDate(new Date(new Date().setDate(new Date().getDate() - 7))),
-        endDate ? formatDate(endDate) : formatDate(new Date())
-      ),
+    queryKey: ['statistics', type, startDate, endDate],
+    queryFn: () => {
+      const fromDate = startDate
+        ? formatDate(startDate)
+        : formatDate(new Date(new Date().setDate(new Date().getDate() - 7)));
+      const toDate = endDate ? formatDate(endDate) : formatDate(new Date());
+
+      return type === 'whatsapp'
+        ? getWhatsappConversationStatistics(fromDate, toDate)
+        : getWebConversationStatistics(fromDate, toDate);
+    },
     enabled: !!startDate && !!endDate,
   });
 
@@ -32,17 +40,20 @@ export default function ConversationStatistics() {
       <Tabs value="stats" className="w-full">
         <TabsList className="mb-6">
           <TabsTrigger value="history" asChild>
-            <NavLink to="/conversation-history" className="text-base">
+            <NavLink to={`/${type}/conversation-history`} className="text-base">
               <span className="mr-2">🔍</span> Conversation History
             </NavLink>
           </TabsTrigger>
           <TabsTrigger value="stats" asChild>
-            <NavLink to="/conversation-statistics" className="text-base">
+            <NavLink
+              to={`/${type}/conversation-statistics`}
+              className="text-base"
+            >
               <span className="mr-2">📊</span> Statistics (KPIs)
             </NavLink>
           </TabsTrigger>
           <TabsTrigger value="leads" asChild>
-            <NavLink to="/leads-database" className="text-base">
+            <NavLink to={`/${type}/leads-database`} className="text-base">
               <span className="mr-2">🗃️</span> Leads Database
             </NavLink>
           </TabsTrigger>
@@ -56,6 +67,7 @@ export default function ConversationStatistics() {
           setEndDate={setEndDate}
           stats={statsData}
           isLoading={isLoadingStats}
+          type={type}
         />
       </div>
     </div>

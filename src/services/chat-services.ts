@@ -3,7 +3,7 @@ import { Chat, Message, Pagination, StatisticsData } from '@/types/chat-types';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const getChats = async (
+const getWebChats = async (
   page: string,
   pageSize: string
 ): Promise<{ chats: Chat[]; pagination: Pagination }> => {
@@ -14,7 +14,7 @@ const getChats = async (
   return response.json();
 };
 
-const getMessages = async (id: string): Promise<Message[]> => {
+const getWebMessages = async (id: string): Promise<Message[]> => {
   const response = await protectedAPIRequest(
     'GET',
     `${BASE_URL}/chat/${id}/message`
@@ -22,7 +22,7 @@ const getMessages = async (id: string): Promise<Message[]> => {
   return response.json();
 };
 
-const getConversationStatistics = async (
+const getWebConversationStatistics = async (
   startDate: string,
   endDate: string
 ): Promise<StatisticsData> => {
@@ -33,4 +33,40 @@ const getConversationStatistics = async (
   );
   return response.json();
 };
-export { getChats, getMessages, getConversationStatistics };
+const getWhatsappChats = async (
+  page: string,
+  pageSize: string
+): Promise<{ chats: Chat[]; pagination: Pagination }> => {
+  return {
+    chats: [],
+    pagination: {
+      total: 0,
+      page: Number(page),
+      pageSize: Number(pageSize),
+      totalPages: 0,
+    },
+  };
+};
+
+const getWhatsappMessages = async (id: string): Promise<Message[]> => {
+  return [];
+};
+
+const getWhatsappConversationStatistics = async (
+  startDate: string,
+  endDate: string
+): Promise<StatisticsData> => {
+  return {
+    numberOfChatId: 0,
+    averageChatPerDay: 0,
+    averageExchangePerChat: 0,
+  };
+};
+export {
+  getWebChats,
+  getWebMessages,
+  getWebConversationStatistics,
+  getWhatsappChats,
+  getWhatsappConversationStatistics,
+  getWhatsappMessages,
+};

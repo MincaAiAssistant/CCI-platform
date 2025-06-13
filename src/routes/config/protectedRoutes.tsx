@@ -11,15 +11,15 @@ export const protectedRoutes: Route[] = [
     component: <Dashboard />,
   },
   {
-    path: '/conversation-history',
+    path: '/:type/conversation-history',
     component: <ConversationHistory />,
   },
   {
-    path: '/conversation-statistics',
+    path: '/:type/conversation-statistics',
     component: <ConversationStatistics />,
   },
   {
-    path: '/leads-database',
+    path: '/:type/leads-database',
     component: <LeadsDatabase />,
   },
   {

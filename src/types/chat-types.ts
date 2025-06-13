@@ -23,4 +23,5 @@ export interface StatisticsData {
   numberOfChatId: number;
   averageChatPerDay: number;
   averageExchangePerChat: number;
+  clickRatePercent?: number;
 }

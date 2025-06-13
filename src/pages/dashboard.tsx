@@ -1,15 +1,12 @@
-import { useAgentContext } from '@/context/agent-context';
 import { Card } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import { ChatType } from '@/lib/types';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { setActiveView, selectAgent } = useAgentContext();
 
-  const handleAgentSelection = (agentType: 'internal' | 'client') => {
-    setActiveView(agentType);
-    selectAgent(null);
-    navigate('/conversation-history');
+  const handleAgentSelection = (agentType: ChatType) => {
+    navigate(`/${agentType}/conversation-history`);
   };
 
   return (
@@ -21,7 +18,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card
           className="p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-t-4 border-[#1e5dbe]"
-          onClick={() => handleAgentSelection('internal')}
+          onClick={() => handleAgentSelection('web')}
         >
           <div className="flex flex-col items-center text-center">
             <div className="w-16 h-16 bg-gradient-to-b from-[#00a1cb] to-[#1e5dbe] rounded-full flex items-center justify-center mb-4">
@@ -40,7 +37,7 @@ export default function Dashboard() {
 
         <Card
           className="p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-t-4 border-[#1e5dbe]"
-          onClick={() => handleAgentSelection('internal')}
+          onClick={() => handleAgentSelection('whatsapp')}
         >
           <div className="flex flex-col items-center text-center">
             <div className="w-16 h-16 bg-gradient-to-b from-[#00a1cb] to-[#1e5dbe] rounded-full flex items-center justify-center mb-4">
@@ -59,7 +56,7 @@ export default function Dashboard() {
 
         <Card
           className="p-6 cursor-pointer hover:shadow-lg transition-shadow duration-300 border-t-4 border-[#1e5dbe]"
-          onClick={() => handleAgentSelection('client')}
+          onClick={() => navigate(`/agents-client`)}
         >
           <div className="flex flex-col items-center text-center">
             <div className="w-16 h-16 bg-gradient-to-b from-[#00a1cb] to-[#1e5dbe] rounded-full flex items-center justify-center mb-4">

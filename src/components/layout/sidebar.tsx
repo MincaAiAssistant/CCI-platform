@@ -1,4 +1,3 @@
-import { useAgentContext } from '@/context/agent-context';
 import { useAuthStore } from '@/lib/auth-store';
 import { cn } from '@/lib/utils';
 import { useLocation } from 'react-router-dom';
@@ -6,8 +5,9 @@ import { useLocation } from 'react-router-dom';
 export default function Sidebar() {
   const { logout } = useAuthStore();
   const location = useLocation();
-  const { activeView, setActiveView, selectAgent } = useAgentContext();
-
+  const pathSegments = location.pathname.split('/');
+  const currentType = pathSegments[1];
+  console.log(location.pathname);
   return (
     <aside className="bg-gradient-to-b from-[#00a1cb] to-[#1e5dbe] text-white w-80 flex-shrink-0 hidden md:flex md:flex-col overflow-y-auto h-screen">
       <div className="p-6 flex flex-col items-center justify-center">
@@ -55,17 +55,11 @@ export default function Sidebar() {
       <div className="mt-4 px-4">
         <div
           onClick={() => {
-            setActiveView('internal');
-            selectAgent(null);
-            window.location.href = '/conversation-history';
+            window.location.href = '/web/conversation-history';
           }}
           className={cn(
             'px-4 py-2 flex items-center cursor-pointer rounded-md hover:bg-[#0288d1]/40 transition-all text-white mb-1',
-            (location.pathname === '/conversation-history' ||
-              location.pathname === '/') &&
-              activeView === 'internal'
-              ? 'bg-[#0288d1]/30'
-              : ''
+            currentType === 'web' ? 'bg-[#0288d1]/30' : ''
           )}
         >
           <div className="flex items-center space-x-3">
@@ -78,11 +72,12 @@ export default function Sidebar() {
 
         <div
           onClick={() => {
-            setActiveView('internal');
-            selectAgent(null);
-            window.location.href = '/conversation-history';
+            window.location.href = '/whatsapp/conversation-history';
           }}
-          className="px-4 py-2 flex items-center cursor-pointer rounded-md hover:bg-[#0288d1]/40 transition-all text-white mb-1"
+          className={cn(
+            'px-4 py-2 flex items-center cursor-pointer rounded-md hover:bg-[#0288d1]/40 transition-all text-white mb-1',
+            currentType === 'whatsapp' ? 'bg-[#0288d1]/30' : ''
+          )}
         >
           <div className="flex items-center space-x-3">
             <span className="text-green-300 w-6 h-6 flex items-center justify-center">
@@ -102,15 +97,11 @@ export default function Sidebar() {
       <div className="mt-4 px-4">
         <div
           onClick={() => {
-            setActiveView('client');
-            selectAgent(null);
             window.location.href = '/agents-client';
           }}
           className={cn(
             'px-4 py-2 flex items-center cursor-pointer rounded-md hover:bg-[#0288d1]/40 transition-all text-white mb-1',
-            location.pathname === '/agents-client' && activeView === 'client'
-              ? 'bg-[#0288d1]/30'
-              : ''
+            location.pathname === '/agents-client' ? 'bg-[#0288d1]/30' : ''
           )}
         >
           <div className="flex items-center space-x-3">

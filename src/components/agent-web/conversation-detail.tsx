@@ -1,20 +1,27 @@
-import { Chat } from "@/types/chat-types";
-import { useQuery } from "@tanstack/react-query";
-import { getMessages } from "@/services/chat-services";
-import { Loader2 } from "lucide-react";
+import { Chat } from '@/types/chat-types';
+import { useQuery } from '@tanstack/react-query';
+import { getWebMessages, getWhatsappMessages } from '@/services/chat-services';
+import { Loader2 } from 'lucide-react';
+import { ChatType } from '@/lib/types';
 
 interface ConversationDetailsProps {
   conversation: Chat | null;
+  type: ChatType;
 }
 
 export default function ConversationDetails({
   conversation,
+  type,
 }: ConversationDetailsProps) {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["messages", conversation?.chatid],
-    queryFn: () => getMessages(conversation!.chatid),
+    queryKey: ['messages', type, conversation?.chatid],
+    queryFn: () => {
+      if (!conversation) return Promise.resolve([]);
+      return type === 'whatsapp'
+        ? getWhatsappMessages(conversation.chatid)
+        : getWebMessages(conversation.chatid);
+    },
     enabled: !!conversation,
-    select: (data) => data,
   });
 
   if (!conversation) {
@@ -46,7 +53,7 @@ export default function ConversationDetails({
           ) : isError ? (
             <div className="flex items-center justify-center h-full text-red-500">
               <div>
-                Error loading messages: {error?.message || "Unknown error"}
+                Error loading messages: {error?.message || 'Unknown error'}
               </div>
             </div>
           ) : !data || data.length === 0 ? (
@@ -59,39 +66,39 @@ export default function ConversationDetails({
                 <div
                   key={msg.messageid}
                   className={`flex ${
-                    msg.role === "customer" ? "justify-end" : "justify-start"
+                    msg.role === 'customer' ? 'justify-end' : 'justify-start'
                   }`}
                 >
-                  {msg.role === "agent" && (
+                  {msg.role === 'agent' && (
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[#1e5dbe] text-white mr-2 flex-shrink-0">
                       <span className="text-xs font-medium">AI</span>
                     </div>
                   )}
                   <div
                     className={`max-w-[70%] p-2 rounded-lg ${
-                      msg.role === "customer"
-                        ? "bg-[#1e5dbe] text-white rounded-tr-none"
-                        : "bg-white text-gray-800 rounded-tl-none border border-gray-200"
+                      msg.role === 'customer'
+                        ? 'bg-[#1e5dbe] text-white rounded-tr-none'
+                        : 'bg-white text-gray-800 rounded-tl-none border border-gray-200'
                     }`}
                   >
                     <div
                       className={`${
-                        msg.role === "customer" ? "text-white" : "text-gray-800"
-                      } text-sm`}
+                        msg.role === 'customer' ? 'text-white' : 'text-gray-800'
+                      } text-sm whitespace-pre-wrap`}
                     >
                       {msg.content}
                     </div>
                     <div
                       className={`text-xs ${
-                        msg.role === "customer"
-                          ? "text-blue-100"
-                          : "text-gray-500"
+                        msg.role === 'customer'
+                          ? 'text-blue-100'
+                          : 'text-gray-500'
                       }`}
                     >
                       {new Date(msg.created_at).toLocaleTimeString()}
                     </div>
                   </div>
-                  {msg.role === "customer" && (
+                  {msg.role === 'customer' && (
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-300 ml-2 flex-shrink-0">
                       <span className="text-xs font-medium">U</span>
                     </div>

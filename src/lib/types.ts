@@ -69,3 +69,5 @@ export interface AuthResponse {
   user: User;
   token: string;
 }
+
+export type ChatType = 'whatsapp' | 'web';

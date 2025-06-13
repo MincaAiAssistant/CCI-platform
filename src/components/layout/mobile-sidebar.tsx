@@ -25,15 +25,12 @@ export default function MobileSidebar() {
         {/* Agent Support */}
         <div
           onClick={() => {
-            setActiveView('internal');
-            selectAgent(null);
-            window.location.href = '/conversation-history';
+            window.location.href = '/web/conversation-history';
           }}
           className={cn(
             'text-white p-3 rounded-full flex items-center justify-center',
-            (location.pathname === '/conversation-history' ||
-              location.pathname === '/') &&
-              activeView === 'internal'
+            location.pathname === '/web/conversation-history' ||
+              location.pathname === '/'
               ? 'bg-[#0288d1]/50'
               : ''
           )}

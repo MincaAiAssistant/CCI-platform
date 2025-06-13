@@ -2,15 +2,19 @@ import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import SearchBar from '@/components/agent-web/search-bar';
 import ConversationList from '@/components/agent-web/conversation-list';
 import ConversationDetails from '@/components/agent-web/conversation-detail';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { getChats } from '@/services/chat-services';
 import { Chat } from '@/types/chat-types';
+import { getWebChats, getWhatsappChats } from '@/services/chat-services';
+import { ChatType } from '@/lib/types';
 
 export default function ConversationHistory() {
+  const params = useParams();
+  const type = (params.type ?? '') as ChatType;
+  console.log(type);
   const queryClient = useQueryClient();
   const [selectedConversation, setSelectedConversation] = useState<Chat | null>(
     null
@@ -26,15 +30,15 @@ export default function ConversationHistory() {
     isFetchingNextPage,
     isLoading: isLoadingChats,
   } = useInfiniteQuery({
-    queryKey: ['chats'],
-    queryFn: ({ pageParam = 1 }) => getChats(pageParam.toString(), '6'),
+    queryKey: ['chats', type],
+    queryFn: ({ pageParam = 1 }) =>
+      type === 'whatsapp'
+        ? getWhatsappChats(pageParam.toString(), '6')
+        : getWebChats(pageParam.toString(), '6'),
     getNextPageParam: (lastPage) => {
       const currentPage = lastPage.pagination.page;
       const totalPages = lastPage.pagination.totalPages;
-      if (currentPage < totalPages) {
-        return currentPage + 1;
-      }
-      return undefined;
+      return currentPage < totalPages ? currentPage + 1 : undefined;
     },
     initialPageParam: 1,
   });
@@ -68,17 +72,20 @@ export default function ConversationHistory() {
       <Tabs value="history" className="w-full">
         <TabsList className="mb-6">
           <TabsTrigger value="history" asChild>
-            <NavLink to="/conversation-history" className="text-base">
+            <NavLink to={`/${type}/conversation-history`} className="text-base">
               <span className="mr-2">🔍</span> Conversation History
             </NavLink>
           </TabsTrigger>
           <TabsTrigger value="stats" asChild>
-            <NavLink to="/conversation-statistics" className="text-base">
+            <NavLink
+              to={`/${type}/conversation-statistics`}
+              className="text-base"
+            >
               <span className="mr-2">📊</span> Statistics (KPIs)
             </NavLink>
           </TabsTrigger>
           <TabsTrigger value="leads" asChild>
-            <NavLink to="/leads-database" className="text-base">
+            <NavLink to={`/${type}/leads-database`} className="text-base">
               <span className="mr-2">🗃️</span> Leads Database
             </NavLink>
           </TabsTrigger>
@@ -122,7 +129,10 @@ export default function ConversationHistory() {
               fetchNextPage={fetchNextPage}
               searchQuery={searchQuery}
             />
-            <ConversationDetails conversation={selectedConversation} />
+            <ConversationDetails
+              conversation={selectedConversation}
+              type={type}
+            />
           </div>
         </div>
       </div>
