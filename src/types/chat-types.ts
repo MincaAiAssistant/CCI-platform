@@ -24,5 +24,5 @@ export interface StatisticsData {
   averageChatPerDay: number;
   averageExchangePerChat: number;
   clickRatePercent?: number;
-  totalChatsWithCalendy: number;
+  totalChatsWithCalendy?: number;
 }
