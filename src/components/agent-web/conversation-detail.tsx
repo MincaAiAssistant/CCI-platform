@@ -3,6 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getWebMessages, getWhatsappMessages } from '@/services/chat-services';
 import { Loader2 } from 'lucide-react';
 import { ChatType } from '@/lib/types';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
 
 interface ConversationDetailsProps {
   conversation: Chat | null;
@@ -84,12 +87,43 @@ export default function ConversationDetails({
                     <div
                       className={`${
                         msg.role === 'customer' ? 'text-white' : 'text-gray-800'
-                      } text-sm whitespace-pre-wrap`}
+                      } text-sm leading-relaxed`}
                     >
-                      {msg.content}
+                      <ReactMarkdown
+                        children={msg.content}
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeHighlight]}
+                        components={{
+                          a: ({ href, children }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`underline break-words ${
+                                msg.role === 'customer'
+                                  ? 'text-blue-100'
+                                  : 'text-blue-600 hover:text-blue-800'
+                              }`}
+                            >
+                              {children}
+                            </a>
+                          ),
+                          p: ({ children }) => (
+                            <p
+                              className={`${
+                                msg.role === 'customer'
+                                  ? 'text-white'
+                                  : 'text-gray-800'
+                              } text-sm leading-relaxed mb-1`}
+                            >
+                              {children}
+                            </p>
+                          ),
+                        }}
+                      />
                     </div>
                     <div
-                      className={`text-xs ${
+                      className={`text-xs mt-2 ${
                         msg.role === 'customer'
                           ? 'text-blue-100'
                           : 'text-gray-500'
