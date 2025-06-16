@@ -94,7 +94,7 @@ export default function Statistics({
               {endDate ? format(endDate, 'dd MMM yyyy') : 'Sélectionner'}
             </Button>
             {showEndCalendar && (
-              <div className="absolute z-10 bg-white shadow-lg border mt-2 rounded">
+              <div className="absolute z-10 right-0 bg-white shadow-lg border mt-2 rounded">
                 <Calendar
                   mode="single"
                   selected={endDate}
@@ -171,6 +171,24 @@ export default function Statistics({
                 : 'Select a period'}
             </div>
           </Card>
+          {type === 'web' && (
+            <Card className="p-6">
+              <div className="text-sm font-medium text-gray-500 mb-2">
+                Calendly Link Sent (Web Only)
+              </div>
+              <div className="text-4xl font-bold text-[#1e5dbe]">
+                {stats?.totalChatsWithCalendy ?? 0}
+              </div>
+              <div className="text-xs text-gray-500 mt-2">
+                {startDate && endDate
+                  ? `${format(startDate, 'dd MMM')} - ${format(
+                      endDate,
+                      'dd MMM yyyy'
+                    )}`
+                  : 'Select a period'}
+              </div>
+            </Card>
+          )}
           {type === 'web' && (
             <Card className="p-6">
               <div className="text-sm font-medium text-gray-500 mb-2">

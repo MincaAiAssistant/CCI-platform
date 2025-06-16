@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
@@ -14,7 +14,6 @@ import { ChatType } from '@/lib/types';
 export default function ConversationHistory() {
   const params = useParams();
   const type = (params.type ?? '') as ChatType;
-  console.log(type);
   const queryClient = useQueryClient();
   const [selectedConversation, setSelectedConversation] = useState<Chat | null>(
     null
@@ -66,6 +65,15 @@ export default function ConversationHistory() {
               .includes(searchQuery.toLowerCase()) ||
             chat.chatid.toLowerCase().includes(searchQuery.toLowerCase())
         );
+  useEffect(() => {
+    if (
+      !selectedConversation &&
+      filteredConversations.length > 0 &&
+      !isLoadingChats
+    ) {
+      setSelectedConversation(filteredConversations[0]);
+    }
+  }, [filteredConversations, selectedConversation, isLoadingChats]);
 
   return (
     <div className="w-full">
