@@ -1,10 +1,8 @@
 import { cn } from '@/lib/utils';
-import { useAgentContext } from '@/context/agent-context';
 import { useLocation } from 'react-router-dom';
 
 export default function MobileSidebar() {
   const location = useLocation();
-  const { activeView, setActiveView, selectAgent } = useAgentContext();
 
   return (
     <div className="md:hidden fixed bottom-0 w-full bg-gradient-to-r from-[#00a1cb] to-[#1e5dbe] z-50">
@@ -16,7 +14,7 @@ export default function MobileSidebar() {
           }}
           className={cn(
             'text-white p-3 rounded-full flex items-center justify-center',
-            location.pathname === '/' && !activeView ? 'bg-[#0288d1]/50' : ''
+            location.pathname === '/' ? 'bg-[#0288d1]/50' : ''
           )}
         >
           <i className="fas fa-tachometer-alt text-white"></i>
@@ -41,15 +39,11 @@ export default function MobileSidebar() {
         {/* WhatsApp Campaign */}
         <div
           onClick={() => {
-            setActiveView('client');
-            selectAgent(null);
             window.location.href = '/agents-client';
           }}
           className={cn(
             'text-white p-3 rounded-full flex items-center justify-center',
-            location.pathname === '/agents-client' && activeView === 'client'
-              ? 'bg-[#0288d1]/50'
-              : ''
+            location.pathname === '/agents-client' ? 'bg-[#0288d1]/50' : ''
           )}
         >
           <i className="fab fa-whatsapp text-green-200"></i>

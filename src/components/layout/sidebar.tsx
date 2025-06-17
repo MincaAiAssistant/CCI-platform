@@ -7,7 +7,6 @@ export default function Sidebar() {
   const location = useLocation();
   const pathSegments = location.pathname.split('/');
   const currentType = pathSegments[1];
-  console.log(location.pathname);
   return (
     <aside className="bg-gradient-to-b from-[#00a1cb] to-[#1e5dbe] text-white w-80 flex-shrink-0 hidden md:flex md:flex-col overflow-y-auto h-screen">
       <div className="p-6 flex flex-col items-center justify-center">
