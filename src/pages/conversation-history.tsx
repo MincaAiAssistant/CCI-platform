@@ -8,8 +8,8 @@ import ConversationList from '@/components/agent-web/conversation-list';
 import ConversationDetails from '@/components/agent-web/conversation-detail';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { Chat } from '@/types/chat-types';
-import { getWebChats, getWhatsappChats } from '@/services/chat-services';
 import { ChatType } from '@/lib/types';
+import { getChats } from '@/services/chat-services';
 
 export default function ConversationHistory() {
   const params = useParams();
@@ -30,10 +30,7 @@ export default function ConversationHistory() {
     isLoading: isLoadingChats,
   } = useInfiniteQuery({
     queryKey: ['chats', type],
-    queryFn: ({ pageParam = 1 }) =>
-      type === 'whatsapp'
-        ? getWhatsappChats(pageParam.toString(), '6')
-        : getWebChats(pageParam.toString(), '6'),
+    queryFn: ({ pageParam = 1 }) => getChats(pageParam.toString(), '10', type),
     getNextPageParam: (lastPage) => {
       const currentPage = lastPage.pagination.page;
       const totalPages = lastPage.pagination.totalPages;
@@ -137,10 +134,7 @@ export default function ConversationHistory() {
               fetchNextPage={fetchNextPage}
               searchQuery={searchQuery}
             />
-            <ConversationDetails
-              conversation={selectedConversation}
-              type={type}
-            />
+            <ConversationDetails conversation={selectedConversation} />
           </div>
         </div>
       </div>

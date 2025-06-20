@@ -3,11 +3,9 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { NavLink, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Statistics from '@/components/agent-web/statistics';
-import {
-  getWebConversationStatistics,
-  getWhatsappConversationStatistics,
-} from '@/services/chat-services';
+
 import { ChatType } from '@/lib/types';
+import { getConversationStatistics } from '@/services/chat-services';
 
 export default function ConversationStatistics() {
   const [startDate, setStartDate] = useState<Date | undefined>(
@@ -24,9 +22,7 @@ export default function ConversationStatistics() {
         : formatDate(new Date(new Date().setDate(new Date().getDate() - 7)));
       const toDate = endDate ? formatDate(endDate) : formatDate(new Date());
 
-      return type === 'whatsapp'
-        ? getWhatsappConversationStatistics(fromDate, toDate)
-        : getWebConversationStatistics(fromDate, toDate);
+      return getConversationStatistics(fromDate, toDate, type);
     },
     enabled: !!startDate && !!endDate,
   });

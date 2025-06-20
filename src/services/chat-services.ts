@@ -1,20 +1,22 @@
 import { protectedAPIRequest } from '@/lib/queryClient';
+import { ChatType } from '@/lib/types';
 import { Chat, Message, Pagination, StatisticsData } from '@/types/chat-types';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const getWebChats = async (
+const getChats = async (
   page: string,
-  pageSize: string
+  pageSize: string,
+  type: ChatType
 ): Promise<{ chats: Chat[]; pagination: Pagination }> => {
   const response = await protectedAPIRequest(
     'GET',
-    `${BASE_URL}/chat?page=${page}&pageSize=${pageSize}`
+    `${BASE_URL}/chat?page=${page}&pageSize=${pageSize}&type=${type}`
   );
   return response.json();
 };
 
-const getWebMessages = async (id: string): Promise<Message[]> => {
+const getMessages = async (id: string): Promise<Message[]> => {
   const response = await protectedAPIRequest(
     'GET',
     `${BASE_URL}/chat/${id}/message`
@@ -22,51 +24,25 @@ const getWebMessages = async (id: string): Promise<Message[]> => {
   return response.json();
 };
 
-const getWebConversationStatistics = async (
+const getConversationStatistics = async (
   startDate: string,
-  endDate: string
+  endDate: string,
+  type: ChatType
 ): Promise<StatisticsData> => {
   const response = await protectedAPIRequest(
     'POST',
-    `${BASE_URL}/analytics/overall`,
+    `${BASE_URL}/analytics/overall?type=${type}`,
     { start_date: startDate, end_date: endDate }
   );
   return response.json();
 };
-const getWhatsappChats = async (
-  page: string,
-  pageSize: string
-): Promise<{ chats: Chat[]; pagination: Pagination }> => {
-  return {
-    chats: [],
-    pagination: {
-      total: 0,
-      page: Number(page),
-      pageSize: Number(pageSize),
-      totalPages: 0,
-    },
-  };
+
+const upsertLeads = async () => {
+  const response = await protectedAPIRequest(
+    'POST',
+    `${BASE_URL}/chat/last_activity/unstored`
+  );
+  return response.json();
 };
 
-const getWhatsappMessages = async (id: string): Promise<Message[]> => {
-  return [];
-};
-
-const getWhatsappConversationStatistics = async (
-  startDate: string,
-  endDate: string
-): Promise<StatisticsData> => {
-  return {
-    numberOfChatId: 0,
-    averageChatPerDay: 0,
-    averageExchangePerChat: 0,
-  };
-};
-export {
-  getWebChats,
-  getWebMessages,
-  getWebConversationStatistics,
-  getWhatsappChats,
-  getWhatsappConversationStatistics,
-  getWhatsappMessages,
-};
+export { getChats, getMessages, getConversationStatistics, upsertLeads };

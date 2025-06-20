@@ -1,28 +1,23 @@
 import { Chat } from '@/types/chat-types';
 import { useQuery } from '@tanstack/react-query';
-import { getWebMessages, getWhatsappMessages } from '@/services/chat-services';
 import { Loader2 } from 'lucide-react';
-import { ChatType } from '@/lib/types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
+import { getMessages } from '@/services/chat-services';
 
 interface ConversationDetailsProps {
   conversation: Chat | null;
-  type: ChatType;
 }
 
 export default function ConversationDetails({
   conversation,
-  type,
 }: ConversationDetailsProps) {
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['messages', type, conversation?.chatid],
+    queryKey: ['messages', conversation?.chatid],
     queryFn: () => {
       if (!conversation) return Promise.resolve([]);
-      return type === 'whatsapp'
-        ? getWhatsappMessages(conversation.chatid)
-        : getWebMessages(conversation.chatid);
+      return getMessages(conversation.chatid);
     },
     enabled: !!conversation,
   });

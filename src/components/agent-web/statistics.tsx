@@ -171,24 +171,22 @@ export default function Statistics({
                 : 'Select a period'}
             </div>
           </Card>
-          {type === 'web' && (
-            <Card className="p-6">
-              <div className="text-sm font-medium text-gray-500 mb-2">
-                Calendly Link Sent (Web Only)
-              </div>
-              <div className="text-4xl font-bold text-[#1e5dbe]">
-                {stats?.totalChatsWithCalendy ?? 0}
-              </div>
-              <div className="text-xs text-gray-500 mt-2">
-                {startDate && endDate
-                  ? `${format(startDate, 'dd MMM')} - ${format(
-                      endDate,
-                      'dd MMM yyyy'
-                    )}`
-                  : 'Select a period'}
-              </div>
-            </Card>
-          )}
+          <Card className="p-6">
+            <div className="text-sm font-medium text-gray-500 mb-2">
+              Calendly Link Sent
+            </div>
+            <div className="text-4xl font-bold text-[#1e5dbe]">
+              {stats?.totalChatsWithCalendy ?? 0}
+            </div>
+            <div className="text-xs text-gray-500 mt-2">
+              {startDate && endDate
+                ? `${format(startDate, 'dd MMM')} - ${format(
+                    endDate,
+                    'dd MMM yyyy'
+                  )}`
+                : 'Select a period'}
+            </div>
+          </Card>
           {type === 'web' && (
             <Card className="p-6">
               <div className="text-sm font-medium text-gray-500 mb-2">
